@@ -265,6 +265,11 @@ typescript@^5.3.3:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.3.3.tgz#b3ce6ba258e72e6305ba66f5c9b452aaee3ffe37"
   integrity sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==
 
+valon-args@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/valon-args/-/valon-args-3.0.2.tgz#9715d07c5e6a42cf7c3bb9a593771da6a6c4eb79"
+  integrity sha512-H0paKiXjQOHPLTp1UwK1ohtQ5tnuNYxeun9ex6X19jzYM7aq1k/fTtgqqce5IArXUOITAjRcKasWAC/IetqB/w==
+
 which@^2.0.1:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/which/-/which-2.0.2.tgz#7c6a8dd0a636a0327e10b59c9286eee93f3f51b1"
