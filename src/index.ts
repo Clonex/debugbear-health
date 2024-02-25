@@ -22,4 +22,4 @@ if (!page) {
   throw new Error("Page not found!");
 }
 
-console.log(page);
+console.log({ page });
