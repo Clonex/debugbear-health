@@ -10,6 +10,7 @@ const options = cliArgs({
 const debugBear = new DebugBear(options.debugBearToken);
 const project = await debugBear.projects.get(options.projectId);
 const page = project.pages.find((page) => page.id === options.pageId);
+const metrics = await debugBear.projects.getPageMetrics(options.projectId);
 
 if (!page) {
   console.log(
