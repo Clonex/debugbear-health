@@ -1,42 +1,51 @@
 import { DebugBear } from "debugbear";
 
+interface DebugBearMetric {
+  "analysis.date": string;
+  "performance.score": number;
+}
+
+export function daysAgo(days: number, startDate = new Date()): Date {
+  const date = new Date(startDate);
+  date.setDate(date.getDate() - days);
+
+  return date;
+}
+
+const MEASUREMENT_DAYS_PAGE_SIZE = 2;
 export async function getMeasurements(
   debugBear: DebugBear,
-  projectId: string,
+  pageId: string,
   daysBack = 14
 ) {
-  const targetDate = new Date();
-  targetDate.setUTCDate(targetDate.getUTCDate() - daysBack);
+  const targetDate = daysAgo(daysBack);
 
   let ret: { score: number; measuredAt: Date }[] = [];
-  let firstDate: Date | undefined;
+  let interval = {
+    from: daysAgo(MEASUREMENT_DAYS_PAGE_SIZE),
+    to: new Date(),
+  };
+
   do {
-    console.log({
-      before: firstDate,
-    });
-    const measurements = await debugBear.projects.getPageMetrics(projectId, {
-      before: firstDate,
-    });
-    console.log(measurements.map((d) => d.metrics?.["analysis.date"]));
-    for (const measurement of measurements) {
-      if (!measurement?.metrics) {
-        continue;
-      }
-
+    const currentPage: DebugBearMetric[] = await debugBear.pages.getMetrics(
+      pageId,
+      interval
+    );
+    for (const measurement of currentPage) {
       ret.push({
-        score: measurement.metrics["performance.score"],
-        measuredAt: new Date(measurement.metrics["analysis.date"]),
+        score: measurement["performance.score"],
+        measuredAt: new Date(measurement["analysis.date"]),
       });
-
-      ret = ret.sort((a, b) => a.measuredAt.getTime() - b.measuredAt.getTime());
-
-      firstDate = ret[0].measuredAt;
-
-      if (ret.length > 120) {
-        throw new Error("Huh");
-      }
     }
-  } while (ret.length === 0 || ret[ret.length - 1].measuredAt > targetDate);
+    ret = ret.sort((a, b) => a.measuredAt.getTime() - b.measuredAt.getTime());
+
+    if (ret.length > 0) {
+      interval.to = new Date(ret[0].measuredAt);
+    } else {
+      interval.to = daysAgo(MEASUREMENT_DAYS_PAGE_SIZE, interval.to);
+    }
+    interval.from = daysAgo(MEASUREMENT_DAYS_PAGE_SIZE, interval.to);
+  } while (ret.length === 0 || ret[0].measuredAt > targetDate);
 
   return ret;
 }

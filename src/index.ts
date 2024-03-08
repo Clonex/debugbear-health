@@ -1,6 +1,6 @@
 import { DebugBear } from "debugbear";
 import { cliArgs } from "valon-args";
-import { getMeasurements } from "./utils.js";
+import { daysAgo, getMeasurements } from "./utils.js";
 
 const options = cliArgs({
   debugBearToken: { type: "string", required: true },
@@ -11,8 +11,13 @@ const options = cliArgs({
 const debugBear = new DebugBear(options.debugBearToken);
 const project = await debugBear.projects.get(options.projectId);
 const page = project.pages.find((page) => page.id === options.pageId);
-const metrics = await getMeasurements(debugBear, options.projectId, 2); //debugBear.projects.getPageMetrics(options.projectId);
 
+const testPage = await debugBear.pages.getMetrics(options.pageId, {
+  from: daysAgo(1),
+  to: new Date(),
+});
+
+const metrics = await getMeasurements(debugBear, options.pageId, 14);
 if (!page) {
   console.log(
     "Available pages",
@@ -24,5 +29,7 @@ if (!page) {
   throw new Error("Page not found!");
 }
 
-console.log({ page, metrics });
-console.log(metrics.length);
+const average =
+  metrics.reduce((sum, metric) => sum + metric.score, 0) / metrics.length;
+
+console.log(average);
