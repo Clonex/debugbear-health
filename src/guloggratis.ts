@@ -8,10 +8,10 @@ const projectId = '29163';
 
 const sections = {
 	'desktop-full-load': '54392',
-	'desktop-no-3rd-party': '54394', // "57633",
-
 	'mobile-full-load': '54402',
-	'mobile-no-3rd-party': '54401',
+
+	'desktop-no-3rd-party': '57633', // "57633",
+	'mobile-no-3rd-party': '57759',
 };
 
 const averages = await Promise.all(
